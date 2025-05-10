@@ -188,7 +188,8 @@ public class SertissageIDC_ServiceImplimenetation implements ServiceSertissageID
 	                                		    s.getPdekSertissageIDC().getId()  ,
 	                                  	        s.getPagePDEK().getPageNumber()  ,
 	                                  	        s.getZone() ,
-	                    	     	            s.getHeureCreation()
+	                    	     	            s.getHeureCreation() , 
+	                    	     	            0
 
 	                                		),
 	                                 Collectors.toList()
@@ -280,7 +281,8 @@ public class SertissageIDC_ServiceImplimenetation implements ServiceSertissageID
               		    s.getPdekSertissageIDC().getId()  ,
             	        s.getPagePDEK().getPageNumber() ,
             	        s.getZone() ,
-	     	            s.getHeureCreation()
+	     	            s.getHeureCreation() , 
+	     	            0
 
 	            ))
 	            .toList();
@@ -326,7 +328,8 @@ public class SertissageIDC_ServiceImplimenetation implements ServiceSertissageID
               		    s.getPdekSertissageIDC().getId()  ,
           	            s.getPagePDEK().getPageNumber() ,
             	        s.getZone() ,
-	     	            s.getHeureCreation()
+	     	            s.getHeureCreation() ,
+                        0
 
 
 	            ))
@@ -371,7 +374,7 @@ public class SertissageIDC_ServiceImplimenetation implements ServiceSertissageID
            		    s.getPdekSertissageIDC().getId()  ,
      	            s.getPagePDEK().getPageNumber()  ,
         	        s.getZone() ,
-     	            s.getHeureCreation()
+     	            s.getHeureCreation() ,0
 
 
 	            ))
@@ -430,7 +433,7 @@ public class SertissageIDC_ServiceImplimenetation implements ServiceSertissageID
 
 	    // Étape 4 : modifier les signatures si nécessaire
 	    for (DetailsPlanAction detail : detailsList) {
-	        if (detail.getMatricule_operateur() == (matriculeUser) && detail.getSignature_qualite() == 0) {
+	        if (detail.getMatricule_operateur() == (sertissageIDC.getUserSertissageIDC().getMatricule()) && detail.getSignature_qualite() == 0) {
 	            detail.setSignature_qualite(1);
 	            detailsPlanActionRepository.save(detail); // sauvegarde
 	        }

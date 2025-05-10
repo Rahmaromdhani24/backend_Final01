@@ -18,6 +18,7 @@ public class PDEK_ServiceImplimenetation implements PDEKService {
 	@Autowired PdekRepository pdekRepository ;
 	@Autowired ProjetRepository projetRepository  ;
 	@Autowired private JdbcTemplate jdbcTemplate;
+	@Autowired private ControleQualiteRepository controleQualityRepository ; 
 
 
 	public boolean verifierExistencePDEK_soudureUltrason(String sectionFil, int segment ,Plant plant , String nomProjet ) {
@@ -106,47 +107,53 @@ public class PDEK_ServiceImplimenetation implements PDEKService {
 	            List<Object> contenu = new ArrayList<>();
 
 	            if (pdek.getPdekSoudures() != null) {
-	            	  pdek.getPdekSoudures().stream()
-                      .filter(p -> p.getPagePDEK() != null && p.getPagePDEK().getPageNumber() == numeroPage)
-                      .map(p -> new SoudureDTO(
-                          p.getId(),
-      	      	          p.getClass().getSimpleName(),
-      	      	          p.getUserSoudure().getSegment() ,
-         	              p.getUserSoudure().getPlant().toString() ,
-      	      	          p.getUserSoudure().getMachine() ,
-                          p.getCode() ,
-                          p.getSectionFil() ,
-                          p.getDate() ,
-                          p.getHeureCreation() ,
-                          p.getNumeroCycle() ,
-                          p.getUserSoudure().getMatricule() ,
-                          p.getMoyenne() ,
-                          p.getEtendu() ,
-                          p.getPelageX1() , 
-                          p.getPelageX2() , 
-                          p.getPelageX3() , 
-                          p.getPelageX4() , 
-                          p.getPelageX5() ,
-                          p.getPliage(),
-                          p.getDistanceBC() ,
-                          p.getTraction() ,
-                          p.getNombreKanban() ,
-                          p.getNombreNoeud() ,
-                          p.getGrendeurLot() ,
-                          p.getUserSoudure().getMatricule() ,
-                          p.getUserSoudure().getMatricule() ,
-                          p.getDecision() , 
-                          p.getRempliePlanAction(),
-                          p.getPdekSoudure().getId()  ,
-                	      p.getPagePDEK().getPageNumber() ,
-               	          p.getQuantiteAtteint() ,
-               	          p.getZone()
+	                pdek.getPdekSoudures().stream()
+	                    .filter(p -> p.getPagePDEK() != null && p.getPagePDEK().getPageNumber() == numeroPage)
+	                    .map(p -> {
+	                        Integer matriculeQM = controleQualityRepository
+	                            .findByPdek_IdAndIdInstanceOperation(pdek.getId(), p.getId())
+	                            .map(c -> c.getUser().getMatricule())
+	                            .orElse(0); // valeur par défaut si non trouvé
 
-
-                      ))
-                      .forEach(contenu::add);
-              }
-
+	                        return new SoudureDTO(
+	                            p.getId(),
+	                            p.getClass().getSimpleName(),
+	                            p.getUserSoudure().getSegment(),
+	                            p.getUserSoudure().getPlant().toString(),
+	                            p.getUserSoudure().getMachine(),
+	                            p.getCode(),
+	                            p.getSectionFil(),
+	                            p.getDate(),
+	                            p.getHeureCreation(),
+	                            p.getNumeroCycle(),
+	                            p.getUserSoudure().getMatricule(),
+	                            p.getMoyenne(),
+	                            p.getEtendu(),
+	                            p.getPelageX1(),
+	                            p.getPelageX2(),
+	                            p.getPelageX3(),
+	                            p.getPelageX4(),
+	                            p.getPelageX5(),
+	                            p.getPliage(),
+	                            p.getDistanceBC(),
+	                            p.getTraction(),
+	                            p.getNombreKanban(),
+	                            p.getNombreNoeud(),
+	                            p.getGrendeurLot(),
+	                            p.getUserSoudure().getMatricule(),
+	                            matriculeQM, // valeur traitée ici
+	                            p.getDecision(),
+	                            p.getRempliePlanAction(),
+	                            p.getPdekSoudure().getId(),
+	                            p.getPagePDEK().getPageNumber(),
+	                            p.getQuantiteAtteint(),
+	                            p.getZone()
+	                        );
+	                    })
+	                    .forEach(contenu::add);
+	            }
+	  
+	   
 	            if (pdek.getPdekTorsadages() != null) {
 	                pdek.getPdekTorsadages().stream()
 	                    .filter(t -> t.getPagePDEK() != null && t.getPagePDEK().getPageNumber() == numeroPage)
@@ -231,94 +238,106 @@ public class PDEK_ServiceImplimenetation implements PDEKService {
 	                            .forEach(contenu::add);
 	                    }
 
+	                    if (pdek.getPdekSertissageIDC() != null) {
+	                        pdek.getPdekSertissageIDC().stream()
+	                            .filter(p -> p.getPagePDEK() != null && p.getPagePDEK().getPageNumber() == numeroPage)
+	                            .map(p -> {
+	                                Integer matriculeQM = controleQualityRepository
+	                                    .findByPdek_IdAndIdInstanceOperation(pdek.getId(), p.getId())
+	                                    .map(c -> c.getUser().getMatricule())
+	                                    .orElse(0); // Valeur par défaut si non trouvé
 
-	            if (pdek.getPdekSertissageIDC() != null) {
-	                pdek.getPdekSertissageIDC().stream()
-	                    .filter(i -> i.getPagePDEK() != null && i.getPagePDEK().getPageNumber() == numeroPage)
-	                    .map( s-> new SertissageIDC_DTO( 
-	        	            	s.getId(),
-	        	                s.getClass().getSimpleName() ,
-	                   		    s.getCodeControle(),
-	                   		    s.getSectionFil(),
-	                   		    s.getDate().toString(),
-	                   		    s.getNumCycle(),
-	                   		    s.getUserSertissageIDC().getMatricule(),
-	                   		    s.getHauteurSertissageC1Ech1(),
-	                   		    s.getHauteurSertissageC1Ech2(),
-	                   		    s.getHauteurSertissageC1Ech3(),
-	                   		    s.getHauteurSertissageC1EchFin(),
-	                   		    s.getHauteurSertissageC2Ech1(),
-	                   		    s.getHauteurSertissageC2Ech2(),
-	                   		    s.getHauteurSertissageC2Ech3(),
-	                   		    s.getHauteurSertissageC2EchFin(),
-	                   		    s.getProduit(),
-	                   		    s.getSerieProduit(),
-	                   		    s.getQuantiteCycle(),
-	                   		    s.getNumeroMachine(),
-	                   		    s.getForceTractionC1Ech1(),
-	                   		    s.getForceTractionC1Ech2(),
-	                   		    s.getForceTractionC1Ech3(),
-	                   		    s.getForceTractionC1EchFin(),
-	                   		    s.getForceTractionC2Ech1(),
-	                   		    s.getForceTractionC2Ech2(),
-	                   		    s.getForceTractionC2Ech3(),
-	                   		    s.getForceTractionC2EchFin(),
-	                   		    s.getDecision(),
-	                   		    s.getRempliePlanAction(),
-	                   		    s.getPdekSertissageIDC().getId()  ,
-	                	        s.getPagePDEK().getPageNumber() ,
-	                	        s.getZone() ,
-	    	     	            s.getHeureCreation()
-
-	                    		 ))
-                        .forEach(contenu::add);
-                }
+	                                return new SertissageIDC_DTO(
+	                                    p.getId(),
+	                                    p.getClass().getSimpleName(),
+	                                    p.getCodeControle(),
+	                                    p.getSectionFil(),
+	                                    p.getDate() != null ? p.getDate().toString() : null,
+	                                    p.getNumCycle(),
+	                                    p.getUserSertissageIDC() != null ? p.getUserSertissageIDC().getMatricule() : 0,
+	                                    p.getHauteurSertissageC1Ech1(),
+	                                    p.getHauteurSertissageC1Ech2(),
+	                                    p.getHauteurSertissageC1Ech3(),
+	                                    p.getHauteurSertissageC1EchFin(),
+	                                    p.getHauteurSertissageC2Ech1(),
+	                                    p.getHauteurSertissageC2Ech2(),
+	                                    p.getHauteurSertissageC2Ech3(),
+	                                    p.getHauteurSertissageC2EchFin(),
+	                                    p.getProduit(),
+	                                    p.getSerieProduit(),
+	                                    p.getQuantiteCycle(),
+	                                    p.getNumeroMachine(),
+	                                    p.getForceTractionC1Ech1(),
+	                                    p.getForceTractionC1Ech2(),
+	                                    p.getForceTractionC1Ech3(),
+	                                    p.getForceTractionC1EchFin(),
+	                                    p.getForceTractionC2Ech1(),
+	                                    p.getForceTractionC2Ech2(),
+	                                    p.getForceTractionC2Ech3(),
+	                                    p.getForceTractionC2EchFin(),
+	                                    p.getDecision(),
+	                                    p.getRempliePlanAction(),
+	                                    p.getPdekSertissageIDC() != null ? p.getPdekSertissageIDC().getId() : null,
+	                                    p.getPagePDEK() != null ? p.getPagePDEK().getPageNumber() : 0,
+	                                    p.getZone(),
+	                                    p.getHeureCreation(),
+	                                    matriculeQM
+	                                );
+	                            })
+	                            .forEach(contenu::add);
+	                    }
 
 
 	            if (pdek.getPdekSertissageNormal() != null) {
 	                pdek.getPdekSertissageNormal().stream()
-	                    .filter(n -> n.getPagePDEK() != null && n.getPagePDEK().getPageNumber() == numeroPage)
-	                    .map(n -> new SertissageNormal_DTO(
-	                    		 n.getId(),
-	                             n.getClass().getSimpleName() ,
-	                             n.getUserSertissageNormal().getPlant().toString() ,
-	                             n.getHeureCreation() ,
-	                             n.getCodeControle() ,  
-	                             n.getSectionFil(),
-	                             n.getNumeroOutils() , 
-	                             n.getNumeroContacts()  ,
-	                             n.getDate(),
-	                             n.getNumCycle(),
-	                             n.getUserSertissageNormal().getMatricule(),  
-	                             n.getHauteurSertissageEch1(),
-	                             n.getHauteurSertissageEch2(),
-	                             n.getHauteurSertissageEch3(),
-	                             n.getHauteurSertissageEchFin(),
-	                             n.getLargeurSertissage(), 
-	                             n.getLargeurSertissageEchFin(), 
-	                             n.getHauteurIsolant(),
-	                             n.getLargeurIsolant(),
-	                             n.getLargeurIsolantEchFin(),
-	                             n.getHauteurIsolantEchFin(),
-	                             n.getTraction(),
-	                             n.getTractionFinEch(),
-	                             n.getProduit(),
-	                             n.getSerieProduit(),
-	                             n.getQuantiteCycle(),
-	                             n.getSegment(),
-	                             n.getNumeroMachine(),
-	                             n.getDecision(),
-	                             n.getRempliePlanAction() ,
-	                             n.getPdekSertissageNormal().getId()  ,
-	                  	         n.getPagePDEK().getPageNumber() ,
-	                  	         n.getPdekSertissageNormal().getLGD() ,
-		                	     n.getZone()
+	                .filter(p -> p.getPagePDEK() != null && p.getPagePDEK().getPageNumber() == numeroPage)
+                    .map(p -> {
+                        Integer matriculeQM = controleQualityRepository
+                            .findByPdek_IdAndIdInstanceOperation(pdek.getId(), p.getId())
+                            .map(c -> c.getUser().getMatricule())
+                            .orElse(0); // Valeur par défaut si non trouvé
 
+                        return new SertissageNormal_DTO(
+	                    		 p.getId(),
+	                             p.getClass().getSimpleName() ,
+	                             p.getUserSertissageNormal().getPlant().toString() ,
+	                             p.getHeureCreation() ,
+	                             p.getCodeControle() ,  
+	                             p.getSectionFil(),
+	                             p.getNumeroOutils() , 
+	                             p.getNumeroContacts()  ,
+	                             p.getDate(),
+	                             p.getNumCycle(),
+	                             p.getUserSertissageNormal().getMatricule(),  
+	                             p.getHauteurSertissageEch1(),
+	                             p.getHauteurSertissageEch2(),
+	                             p.getHauteurSertissageEch3(),
+	                             p.getHauteurSertissageEchFin(),
+	                             p.getLargeurSertissage(), 
+	                             p.getLargeurSertissageEchFin(), 
+	                             p.getHauteurIsolant(),
+	                             p.getLargeurIsolant(),
+	                             p.getLargeurIsolantEchFin(),
+	                             p.getHauteurIsolantEchFin(),
+	                             p.getTraction(),
+	                             p.getTractionFinEch(),
+	                             p.getProduit(),
+	                             p.getSerieProduit(),
+	                             p.getQuantiteCycle(),
+	                             p.getSegment(),
+	                             p.getNumeroMachine(),
+	                             p.getDecision(),
+	                             p.getRempliePlanAction() ,
+	                             p.getPdekSertissageNormal().getId()  ,
+	                  	         p.getPagePDEK().getPageNumber() ,
+	                  	         p.getPdekSertissageNormal().getLGD() ,
+		                	     p.getZone() ,
+		                	     matriculeQM
+                                );
+                            })
+                            .forEach(contenu::add);
+                    }
 
-	                    ))
-	                    .forEach(contenu::add);
-
-	            }
 
 	            if (!contenu.isEmpty()) {
 	                result.add(new ContenuPagePdekDTO(numeroPage, contenu));

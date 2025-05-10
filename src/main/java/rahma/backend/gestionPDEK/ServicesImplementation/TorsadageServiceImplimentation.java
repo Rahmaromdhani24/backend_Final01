@@ -466,7 +466,7 @@ public class TorsadageServiceImplimentation implements ServiceTorsadage {
 
 	    // Étape 4 : modifier les signatures si nécessaire
 	    for (DetailsPlanAction detail : detailsList) {
-	        if (detail.getMatricule_operateur() == (matriculeUser) && detail.getSignature_qualite() == 0) {
+	        if (detail.getMatricule_operateur() == (torsadage.getUserTorsadage().getMatricule()) && detail.getSignature_qualite() == 0) {
 	            detail.setSignature_qualite(1);
 	            detailsPlanActionRepository.save(detail); // sauvegarde
 	        }

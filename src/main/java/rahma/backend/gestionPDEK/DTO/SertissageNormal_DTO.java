@@ -50,5 +50,7 @@ public class SertissageNormal_DTO {
     
     private String  LGD;
     private String zone  ;
+    private int matriculeAgentQualite ; 
+
 
 }

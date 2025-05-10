@@ -339,7 +339,7 @@ public class SertissageNormalServiceImplimentation implements ServiceSertissageN
 	                                         n.getPdekSertissageNormal().getId()  ,
 	                              	         n.getPagePDEK().getPageNumber() ,
 	                              	         n.getPdekSertissageNormal().getLGD() ,
-	                              	         n.getZone()),
+	                              	         n.getZone() , 0),
 	                                 Collectors.toList()
 	                         )
 	                 ));
@@ -429,7 +429,7 @@ public class SertissageNormalServiceImplimentation implements ServiceSertissageN
 		                     n.getPdekSertissageNormal().getId()  ,
 		          	         n.getPagePDEK().getPageNumber() ,
 		          	         n.getPdekSertissageNormal().getLGD() ,
-		          	         n.getZone()
+		          	         n.getZone() , 0
 
 		            		  ))
 		            .toList();
@@ -475,7 +475,7 @@ public class SertissageNormalServiceImplimentation implements ServiceSertissageN
 	                     n.getPdekSertissageNormal().getId()  ,
 	          	         n.getPagePDEK().getPageNumber() ,
 	          	         n.getPdekSertissageNormal().getLGD() ,
-	          	         n.getZone()
+	          	         n.getZone() , 0
 
 	            		  ))
 	            .toList();
@@ -520,7 +520,7 @@ public class SertissageNormalServiceImplimentation implements ServiceSertissageN
 	                     n.getPdekSertissageNormal().getId()  ,
 	          	         n.getPagePDEK().getPageNumber() ,
 	          	         n.getPdekSertissageNormal().getLGD() ,
-	          	         n.getZone()
+	          	         n.getZone() , 0
 
 	            		  ))
 	            .toList();
@@ -577,7 +577,7 @@ public class SertissageNormalServiceImplimentation implements ServiceSertissageN
 
 	    // Étape 4 : modifier les signatures si nécessaire
 	    for (DetailsPlanAction detail : detailsList) {
-	        if (detail.getMatricule_operateur() == (matriculeUser) && detail.getSignature_qualite() == 0) {
+	        if (detail.getMatricule_operateur() == (sertissageIDC.getUserSertissageNormal().getMatricule()) && detail.getSignature_qualite() == 0) {
 	            detail.setSignature_qualite(1);
 	            detailsPlanActionRepository.save(detail); // sauvegarde
 	        }

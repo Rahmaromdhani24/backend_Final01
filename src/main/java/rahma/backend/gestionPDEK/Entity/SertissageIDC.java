@@ -82,7 +82,7 @@ public class SertissageIDC extends Operation {
     private int quantiteCycle ; 
     
     @Column(name = "numero_machine")
-    private int numeroMachine ; 
+    private String numeroMachine ; 
     
     @Column(name = "force_traction_c1_echantillon1")
     private double forceTractionC1Ech1 ; 

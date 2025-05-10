@@ -281,7 +281,8 @@ public ResponseEntity<String> ajouterSertissageNormal(
                  n.getPdekSertissageNormal().getId()  ,
       	         n.getPagePDEK().getPageNumber() , 
       	         n.getPdekSertissageNormal().getLGD() ,
-     	          n.getZone()
+     	         n.getZone() ,
+     	          0
 
          )
      ).collect(Collectors.toList());

@@ -29,11 +29,11 @@ public class WebSecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Activation de CORS ici
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/login").permitAll()
+                .requestMatchers("/auth/**").permitAll()
                 .requestMatchers("/auth/getUser/**").hasAnyRole("ADMIN", "OPERATEUR", "CHEF_DE_LIGNE" , "AGENT_QUALITE" , "TECHNICIEN") 
                 .requestMatchers("/pdek/**").hasAnyRole("ADMIN", "OPERATEUR", "CHEF_DE_LIGNE" , "AGENT_QUALITE" , "TECHNICIEN") 
                 .requestMatchers("/operations/**").hasAnyRole("ADMIN", "OPERATEUR", "CHEF_DE_LIGNE" , "AGENT_QUALITE" , "TECHNICIEN") 
-                .requestMatchers("/admin/**").hasAnyRole("ADMIN" ,"CHEF_DE_LIGNE" ,"AGENT_QUALITE")
+                .requestMatchers("/admin/**").hasAnyRole("ADMIN" ,"OPERATEUR" ,"CHEF_DE_LIGNE" ,"AGENT_QUALITE")
                 .requestMatchers("/statistiques/**").hasAnyRole("ADMIN" ,"CHEF_DE_LIGNE" ,"AGENT_QUALITE" ,"TECHNICIEN")
                 .requestMatchers("/operator/**").hasRole("OPERATEUR")
                 .requestMatchers("/planAction/**").hasAnyRole("ADMIN", "OPERATEUR", "CHEF_DE_LIGNE" , "AGENT_QUALITE" , "TECHNICIEN")

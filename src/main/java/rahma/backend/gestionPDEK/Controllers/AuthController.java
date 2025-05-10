@@ -2,12 +2,15 @@ package rahma.backend.gestionPDEK.Controllers;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import rahma.backend.gestionPDEK.Configuration.ErrorResponse;
 import rahma.backend.gestionPDEK.Configuration.JWTService;
 import rahma.backend.gestionPDEK.Entity.User;
 import rahma.backend.gestionPDEK.Repository.UserRepository;
@@ -25,8 +28,8 @@ public class AuthController {
     }
 
     // Demande avec @RequestBody pour envoyer un JSON contenant le matricule
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+    @PostMapping("/loginOperateur")
+    public ResponseEntity<?> loginOperateur(@RequestBody LoginRequest loginRequest) {
         try {
             // Recherche de l'utilisateur par matricule
             User user = userRepository.findByMatricule(loginRequest.getMatricule())
@@ -40,6 +43,30 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
         }
     }
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        try {
+            User user = userRepository.findByMatricule(loginRequest.getMatricule())
+                    .orElseThrow(() -> new ResourceNotFoundException("MATRICULE_INVALIDE"));
+
+            String role = user.getRole().getNom() ; 
+            if (role == null || !List.of("ADMIN", "CHEF_DE_LIGNE", "AGENT_QUALITE", "TECHNICIEN").contains(role.toUpperCase())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("ROLE_NOT_AUTHORIZED");
+            }
+
+
+            String token = jwtService.generateToken(user);
+            return ResponseEntity.ok(new AuthResponse(token));
+
+        } catch (ResourceNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ErrorResponse("Matricule inexistant", "MATRICULE_INVALIDE"));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ErrorResponse("Erreur interne", "ERREUR_GENERALE"));
+        }
+    }
+
 
     // Classe de réponse pour le token
     static class AuthResponse {

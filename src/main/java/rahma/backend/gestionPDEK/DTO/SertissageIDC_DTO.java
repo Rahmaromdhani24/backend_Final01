@@ -25,7 +25,7 @@ public class SertissageIDC_DTO {
     private String produit ; 
     private String serieProduit  ; 
     private int quantiteCycle ; 
-    private int numeroMachine ; 
+    private String numeroMachine ; 
     private double forceTractionC1Ech1 ; 
     private double forceTractionC1Ech2 ; 
     private double forceTractionC1Ech3 ; 
@@ -40,4 +40,6 @@ public class SertissageIDC_DTO {
     private int numPage ; 
     private String zone  ; 
     private String heureCreation ; 
+    private int matriculeAgentQualite ; 
+    
 }

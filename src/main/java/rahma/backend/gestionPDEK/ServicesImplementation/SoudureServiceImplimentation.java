@@ -52,7 +52,7 @@ public class SoudureServiceImplimentation implements ServiceSoudure {
 		instance1.setGrendeurLot(instanceSoudure.getGrendeurLot());
 		instance1.setLimitePelage(instanceSoudure.getLimitePelage());
 		instance1.setNombreKanban(instanceSoudure.getNombreKanban());
-		instance1.setNombreNoeud(instanceSoudure.getNombreNoeud());
+		instance1.setNombreNoeud("N"+instanceSoudure.getNombreNoeud()); 
 		instance1.setPelageX1(instanceSoudure.getPelageX1());
 		instance1.setPelageX2(instanceSoudure.getPelageX2());
 		instance1.setPelageX3(instanceSoudure.getPelageX3());
@@ -487,11 +487,12 @@ public List<SoudureDTO> recupererSouduresParPageActuel(String sectionFil, int se
 
 	    // Étape 4 : modifier les signatures si nécessaire
 	    for (DetailsPlanAction detail : detailsList) {
-	        if (detail.getMatricule_operateur() == (matriculeUser) && detail.getSignature_qualite() == 0) {
+	        if (detail.getMatricule_operateur() == (soudure.getUserSoudure().getMatricule()) && detail.getSignature_qualite() == 0) {
 	            detail.setSignature_qualite(1);
 	            detailsPlanActionRepository.save(detail); // sauvegarde
 	        }
 	    }
+	
 	}
 	
 	@Override

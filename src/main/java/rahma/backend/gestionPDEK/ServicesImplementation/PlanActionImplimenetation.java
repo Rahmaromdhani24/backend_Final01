@@ -85,10 +85,12 @@ public class PlanActionImplimenetation implements PlanActionService {
 	            .segment(user.getSegment())
 	            .numeroPistolet(numeroPistolet)
 	            .categoriePistolet(categoriePistolet.name())
+	            .typePistolet(typePistolet) 
 	            .build();
 	        
 	        // Sauvegarder le nouveau plan d'action
 	        planAction = planActionRepository.save(planAction);
+	     
 	    }
    
 	    // Associer l'utilisateur au plan d'action

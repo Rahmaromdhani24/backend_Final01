@@ -1,20 +1,14 @@
 package rahma.backend.gestionPDEK.Controllers;
 
-import rahma.backend.gestionPDEK.ServicesImplementation.PDEK_ServiceImplimenetation;
+import rahma.backend.gestionPDEK.ServicesImplementation.*;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
-import rahma.backend.gestionPDEK.DTO.ContenuPagePdekDTO;
-import rahma.backend.gestionPDEK.DTO.PdekGeneral;
-import rahma.backend.gestionPDEK.DTO.PdekResultat;
-import rahma.backend.gestionPDEK.DTO.UserDTO;
-import rahma.backend.gestionPDEK.Entity.PDEK;
-import rahma.backend.gestionPDEK.Entity.TypesOperation;
-import rahma.backend.gestionPDEK.Entity.User;
+import rahma.backend.gestionPDEK.DTO.*;
+import rahma.backend.gestionPDEK.Entity.*;
 import rahma.backend.gestionPDEK.Repository.PdekRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -25,7 +19,8 @@ public class PdekController {
 
 	 @Autowired  private  PDEK_ServiceImplimenetation  pdekService;
 	 @Autowired  private  PdekRepository pdekRepository ;
-	 
+	 @Autowired  private  PlanActionImplimenetation planActionService ;
+
 	 @GetMapping("/pdeks/{typeOperation}")
 	 public List<PdekResultat> getPdekLightByTypeOperation(@PathVariable String typeOperation) {
 	     try {
@@ -111,5 +106,46 @@ public class PdekController {
 	     return ResponseEntity.ok(dto);
 	 }
 	
+	 @GetMapping("/pdekEnServiceAvecPlans/{typeOperation}")
+	 public List<PdekAvecPlansDTO> getPdeksEnServiceAvecPlans(@PathVariable String typeOperation) {
+	     try {
+	         TypesOperation operationEnum = TypesOperation.valueOf(typeOperation);
+	         List<PDEK> pdeks = pdekRepository.findByTypeOperation(operationEnum);
+
+	         return pdeks.stream().map(pdek -> {
+	             List<User> users = pdek.getUsersRempliePDEK();
+
+	             String numPoste = users != null && !users.isEmpty() ? users.get(0).getPoste() : null;
+	             Object usersMatricules = users != null
+	                 ? users.stream().map(user -> user.getMatricule() + " - " + user.getNom() + " " + user.getPrenom()).toList()
+	                 : List.of();
+
+	             List<PlanActionDTO> plans = planActionService.testerPdeksProcessPossedePlanAction(pdek.getId());
+
+	             return new PdekAvecPlansDTO(
+	                 pdek.getId(),
+	                 pdek.getTotalPages(),
+	                 pdek.getSectionFil(),
+	                 pdek.getFrequenceControle(),
+	                 pdek.getSegment(),
+	                 pdek.getNumMachine(),
+	                 pdek.getDateCreation(),
+	                 pdek.getTypeOperation(),
+	                 pdek.getPlant(),
+	                 pdek.getNumeroOutils(),
+	                 pdek.getNumeroContacts(),
+	                 pdek.getLGD(),
+	                 pdek.getTolerance(),
+	                 pdek.getPosGradant(),
+	                 usersMatricules,
+	                 numPoste,
+	                 plans
+	             );
+	         }).toList();
+
+	     } catch (IllegalArgumentException e) {
+	         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Type d'opération invalide : " + typeOperation);
+	     }
+	 }
 
 }
