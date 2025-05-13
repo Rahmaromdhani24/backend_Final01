@@ -50,7 +50,7 @@ public class AuthController {
                     .orElseThrow(() -> new ResourceNotFoundException("MATRICULE_INVALIDE"));
 
             String role = user.getRole().getNom() ; 
-            if (role == null || !List.of("ADMIN", "CHEF_DE_LIGNE", "AGENT_QUALITE", "TECHNICIEN").contains(role.toUpperCase())) {
+            if (role == null || !List.of("SUPER_ADMIN" , "ADMIN", "CHEF_DE_LIGNE", "AGENT_QUALITE", "TECHNICIEN").contains(role.toUpperCase())) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("ROLE_NOT_AUTHORIZED");
             }
 

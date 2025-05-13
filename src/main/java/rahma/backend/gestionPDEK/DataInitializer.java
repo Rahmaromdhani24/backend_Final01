@@ -50,7 +50,9 @@ public class DataInitializer implements CommandLineRunner {
         rolePermissions.put("CHEF_DE_LIGNE", Set.of(permissionsMap.get("READ"), permissionsMap.get("WRITE")));
         rolePermissions.put("AGENT_QUALITE", Set.of(permissionsMap.get("READ"), permissionsMap.get("WRITE")));
         rolePermissions.put("TECHNICIEN", Set.of(permissionsMap.get("READ"), permissionsMap.get("WRITE")));
-        rolePermissions.put("ADMIN", new HashSet<>(permissionsMap.values())); // Admin a toutes les permissions
+        rolePermissions.put("ADMIN", new HashSet<>(permissionsMap.values())); 
+        rolePermissions.put("SUPER_ADMIN", new HashSet<>(permissionsMap.values())); 
+        
 
         // Création des rôles avec leurs permissions
         for (Map.Entry<String, Set<Permission>> entry : rolePermissions.entrySet()) {
@@ -65,15 +67,18 @@ public class DataInitializer implements CommandLineRunner {
             });
 
             // Création de l'admin s'il n'existe pas encore
-            if (roleName.equals("ADMIN") && userRepository.findByEmail("admin@pdek.com").isEmpty()) {
+            if (roleName.equals("SUPER_ADMIN") && userRepository.findByEmail("admin@pdek.com").isEmpty()) {
                 User admin = User.builder()
                         .matricule(1234)
                         .nom("Admin")
                         .prenom("Super")
+                        .poste("homme")
+                        .sexe("N/A")
                         .email("admin@pdek.com")
                         .poste("Administrateur")
                         .machine("N/A")
                         .role(role)
+                        .dateCreation("N/V")
                         .build();
                 userRepository.save(admin);
             }

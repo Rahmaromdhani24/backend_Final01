@@ -17,6 +17,8 @@ public class Projet {
     private Long id;
 
     private String nom;
+    
+    private String dateCreation;
 
     @Enumerated(EnumType.STRING)
     private Plant plant;

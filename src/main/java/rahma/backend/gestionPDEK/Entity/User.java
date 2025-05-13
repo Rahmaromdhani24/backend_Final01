@@ -23,8 +23,14 @@ public class User {
 	  private int segment ;
 	  private String machine ;
 	  private String email;
+	  
+	  @Enumerated(EnumType.STRING)
+	  private TypeAdmin typeAdmin;
+	  
 	  @Column(name = "date_creation")
 	  private String dateCreation  ; 
+	  
+	  private long numeroTelephone ; 
 	  
 	  @Enumerated(EnumType.STRING)
 	   @Column(name = "type_operation")
