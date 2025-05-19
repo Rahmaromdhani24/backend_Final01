@@ -189,7 +189,8 @@ public class SertissageIDC_ServiceImplimenetation implements ServiceSertissageID
 	                                  	        s.getPagePDEK().getPageNumber()  ,
 	                                  	        s.getZone() ,
 	                    	     	            s.getHeureCreation() , 
-	                    	     	            0
+	                    	     	            0 , 
+	                    	     	            s.getSegment()
 
 	                                		),
 	                                 Collectors.toList()
@@ -282,7 +283,8 @@ public class SertissageIDC_ServiceImplimenetation implements ServiceSertissageID
             	        s.getPagePDEK().getPageNumber() ,
             	        s.getZone() ,
 	     	            s.getHeureCreation() , 
-	     	            0
+	     	            0 ,
+	     	           s.getSegment()
 
 	            ))
 	            .toList();
@@ -329,7 +331,8 @@ public class SertissageIDC_ServiceImplimenetation implements ServiceSertissageID
           	            s.getPagePDEK().getPageNumber() ,
             	        s.getZone() ,
 	     	            s.getHeureCreation() ,
-                        0
+                        0 ,
+                        s.getSegment()
 
 
 	            ))
@@ -374,7 +377,9 @@ public class SertissageIDC_ServiceImplimenetation implements ServiceSertissageID
            		    s.getPdekSertissageIDC().getId()  ,
      	            s.getPagePDEK().getPageNumber()  ,
         	        s.getZone() ,
-     	            s.getHeureCreation() ,0
+     	            s.getHeureCreation() ,
+     	            0, 
+     	            s.getSegment()
 
 
 	            ))

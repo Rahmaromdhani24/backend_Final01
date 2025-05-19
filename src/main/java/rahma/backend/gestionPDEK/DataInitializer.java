@@ -69,7 +69,7 @@ public class DataInitializer implements CommandLineRunner {
             // Création de l'admin s'il n'existe pas encore
             if (roleName.equals("SUPER_ADMIN") && userRepository.findByEmail("admin@pdek.com").isEmpty()) {
                 User admin = User.builder()
-                        .matricule(1234)
+                        .matricule(12345678)
                         .nom("Admin")
                         .prenom("Super")
                         .poste("homme")
@@ -85,7 +85,7 @@ public class DataInitializer implements CommandLineRunner {
         }
 
         // Initialisation des projets par plant
-        if (projetRepository.count() == 0) {
+     /*   if (projetRepository.count() == 0) {
             projetRepository.save(Projet.builder().nom("Projet 1 VW").plant(Plant.VW).build());
             projetRepository.save(Projet.builder().nom("Projet 2 VW").plant(Plant.VW).build());
 
@@ -103,6 +103,6 @@ public class DataInitializer implements CommandLineRunner {
             projetRepository.save(Projet.builder().nom("Projet 1 MLB").plant(Plant.MLB).build());
             projetRepository.save(Projet.builder().nom("Projet 2 MLB").plant(Plant.MLB).build());
 
-        }
+        }*/
     }
 }

@@ -281,7 +281,8 @@ public class PDEK_ServiceImplimenetation implements PDEKService {
 	                                    p.getPagePDEK() != null ? p.getPagePDEK().getPageNumber() : 0,
 	                                    p.getZone(),
 	                                    p.getHeureCreation(),
-	                                    matriculeQM
+	                                    matriculeQM , 
+	                                    p.getSegment() 
 	                                );
 	                            })
 	                            .forEach(contenu::add);

@@ -69,7 +69,7 @@ public class StatistiquesImplimentation implements StatistiquesService {
 
 	@Override
 	public double calculerPourcentageAugmentationOperateurs() {
-	    List<String> rolesOperateurs = List.of("OPERATEUR", "CHEF_DE_LIGNE", "AGENT_QUALITE", "TECHNICIEN");
+	    List<String> rolesOperateurs = List.of("OPERATEUR", "CHEF_DE_LIGNE", "AGENT_QUALITE", "TECHNICIEN" , "ADMIN");
 
 	    String anneeActuelle = String.valueOf(LocalDate.now().getYear());
 	    String anneePrecedente = String.valueOf(LocalDate.now().getYear() - 1);

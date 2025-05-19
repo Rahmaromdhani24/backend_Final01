@@ -25,23 +25,18 @@ public class OperateurController {
         this.roleRepository = roleRepository;
         this.projetRepository = projetRepository ; 
     }
+    
     @GetMapping("/getOperateur/{matricule}")
     public ResponseEntity<?> getUser(@PathVariable int matricule) {
         Optional<User> userOptional = userRepository.findById(matricule);
-
         if (userOptional.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Collections.singletonMap("error", "Utilisateur introuvable !"));
-        }
-
+                    .body(Collections.singletonMap("error", "Utilisateur introuvable !"));}      
         User user = userOptional.get();
-
         // Vérifie si le rôle de l'utilisateur est bien OPERATEUR
         if (!user.getRole().getNom().equalsIgnoreCase("OPERATEUR")) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Collections.singletonMap("error", "Ce matricule ne représente pas un opérateur !"));
-        }
-
+                    .body(Collections.singletonMap("error", "Ce matricule ne représente pas un opérateur !")); }
         Map<String, Object> response = new HashMap<>();
         response.put("matricule", user.getMatricule());
         response.put("plant", user.getPlant());
@@ -52,9 +47,9 @@ public class OperateurController {
         response.put("poste", user.getPoste());
         response.put("segment", user.getSegment());
         response.put("machine", user.getMachine());
-
         return ResponseEntity.ok(response);
     }
+    
    @GetMapping("/projets/{plantName}")
 public ResponseEntity<?> getProjetsByPlant(@PathVariable String plantName) {
     try {
@@ -147,4 +142,25 @@ public ResponseEntity<List<UserDTO>> getTechniciensByPlantEtSegment(@RequestPara
 
     return ResponseEntity.ok(dtos);
 }
+
+@GetMapping("/verifier-agent-qualite")
+public ResponseEntity<Boolean> verifierAgentQualite(
+        @RequestParam int matricule,
+        @RequestParam String plant) {
+
+    boolean estValide = userRepository.findByMatricule(matricule)
+            .filter(utilisateur -> "AGENT_QUALITE".equals(utilisateur.getRole().getNom()))
+            .filter(utilisateur -> {
+                try {
+                    Plant plantEnum = Plant.valueOf(plant.toUpperCase());
+                    return utilisateur.getPlant() == plantEnum;
+                } catch (IllegalArgumentException e) {
+                    return false; // Le plant fourni n'existe pas dans l'enum
+                }
+            })
+            .isPresent();
+
+    return ResponseEntity.ok(estValide);
+}
+
 }

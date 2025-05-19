@@ -226,40 +226,56 @@ public class AdminController2 {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Erreur : Rôle introuvable !");
         }
-        User user = User.builder()
+
+        User.UserBuilder builder = User.builder()
                 .matricule(dto.getMatricule())
                 .nom(dto.getNom())
                 .prenom(dto.getPrenom())
                 .role(role.get())
                 .sexe(dto.getSexe())
-                .segment(dto.getSegment())
                 .email(dto.getEmail())
                 .numeroTelephone(dto.getNumeroTelephone())
                 .plant(Plant.valueOf(dto.getPlant()))
-                .dateCreation(LocalDate.now().toString())
-                .typeOperation(TypesOperation.valueOf(dto.getTypeOperation()))
-                .build();
+                .dateCreation(LocalDate.now().toString());
 
+        // Ajouter le segment s'il est fourni
+        if (dto.getSegment() != 0) {
+            builder.segment(dto.getSegment());
+        }
+
+        // Ajouter le typeOperation s'il est fourni
+        if (dto.getTypeOperation() != null && !dto.getTypeOperation().isBlank()) {
+            try {
+                builder.typeOperation(TypesOperation.valueOf(dto.getTypeOperation()));
+            } catch (IllegalArgumentException e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("Type d'opération invalide !");
+            }
+        }
+
+        User user = builder.build();
         return ResponseEntity.status(HttpStatus.CREATED).body(userRepository.save(user));
     }
 
-    @GetMapping("/getUtilisateursSaufOperateur")
-    public List<Users> getUsersByRoleNames() {
-        List<String> roles = Arrays.asList("CHEF_DE_LIGNE", "AGENT_QUALITE", "TECHNICIEN");
-        return userRepository.findByRole_NomIn(roles).stream()
-                .map(user -> new Users (
-                		 user.getMatricule(),
-                         user.getNom(),
-                         user.getPrenom(),
-                         user.getEmail(),
-                         user.getPlant().toString() ,
-                         user.getSegment() , 
-                         user.getNumeroTelephone() ,
-                         user.getTypeOperation().toString() ,         
-                         user.getSexe()  ,
-                         user.getRole().getNom()))
-                .toList();
-    }
+
+@GetMapping("/getUtilisateursSaufOperateur")
+public List<Users> getUsersByRoleNames() {
+    List<String> roles = Arrays.asList("CHEF_DE_LIGNE", "AGENT_QUALITE", "TECHNICIEN");
+    return userRepository.findByRole_NomIn(roles).stream()
+            .map(user -> new Users(
+                    user.getMatricule(),
+                    user.getNom(),
+                    user.getPrenom(),
+                    user.getEmail(),
+                    user.getPlant() != null ? user.getPlant().toString() : null,
+                    user.getSegment(),
+                    user.getNumeroTelephone(),
+                    user.getTypeOperation() != null ? user.getTypeOperation().toString() : null,
+                    user.getSexe(),
+                    user.getRole().getNom()))
+            .toList();
+}
+
     @GetMapping("/getOperateurs")
     public List<Operateur> getOperateurs() {
         List<String> roles = Arrays.asList("OPERATEUR");

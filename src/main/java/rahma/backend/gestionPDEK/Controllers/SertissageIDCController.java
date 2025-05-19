@@ -188,7 +188,8 @@ public ResponseEntity<String> remplirPlanAction(@PathVariable Long id , @PathVar
 	  	                s.getPagePDEK().getPageNumber()  ,
 	     	            s.getZone() , 
 	     	            s.getHeureCreation() ,
-	     	            s.getUserSertissageIDC().getMatricule()
+	     	            s.getUserSertissageIDC().getMatricule() , 
+	     	            s.getSegment()
 
 		         )
 		     ).collect(Collectors.toList());

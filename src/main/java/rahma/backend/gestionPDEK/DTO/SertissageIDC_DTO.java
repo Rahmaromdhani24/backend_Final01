@@ -41,5 +41,6 @@ public class SertissageIDC_DTO {
     private String zone  ; 
     private String heureCreation ; 
     private int matriculeAgentQualite ; 
+    private int segment ; 
     
 }
